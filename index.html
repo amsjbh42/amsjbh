@@ -10,12 +10,13 @@
 :root {
   --primary: #3B82F6;
   --secondary: #10B981;
-  --bg: #F3F4F6;
+  --bg: linear-gradient(135deg, #F3F4F6 0%, #E5E7EB 100%);
   --surface: #FFFFFF;
   --text: #1F2937;
   --error: #EF4444;
-  --radius: 12px;
-  --shadow: 0 4px 12px rgba(0,0,0,0.1);
+  --radius: 16px;
+  --shadow: 0 8px 24px rgba(0,0,0,0.15);
+  --glow: 0 0 15px rgba(59,130,246,0.2);
 }
 * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter', sans-serif; }
 body {
@@ -26,6 +27,18 @@ body {
   flex-direction:column;
   align-items:center;
   padding:20px;
+  position:relative;
+}
+body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 20% 80%, rgba(59,130,246,0.05) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(16,185,129,0.05) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -1;
 }
 h1 {
   color: var(--primary);
@@ -33,32 +46,61 @@ h1 {
   text-align:center;
   font-size: 32px;
   font-weight:600;
+  background: linear-gradient(45deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 .channel-card {
-  background: var(--surface);
+  background: linear-gradient(135deg, var(--primary), var(--secondary)); /* پس‌زمینه گرادیان برای برجسته کردن */
   border-radius: var(--radius);
-  padding: 15px;
-  box-shadow: var(--shadow);
-  margin-bottom: 30px;
+  padding: 30px; /* بزرگ‌تر کردیم */
+  box-shadow: var(--shadow), 0 0 30px rgba(59,130,246,0.5); /* سایه بیشتر برای برجسته کردن */
+  margin-bottom: 40px; /* فاصله بیشتر */
   text-align: center;
   cursor: pointer;
-  transition: transform 0.2s;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  color: #fff; /* متن سفید برای کنتراست */
+  animation: pulse 2s infinite; /* انیمیشن پالس برای جلب توجه */
 }
-.channel-card:hover { transform: translateY(-2px); }
-.channel-card h2 { font-size: 18px; color: var(--secondary); }
+.channel-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s;
+}
+.channel-card:hover::before { left: 100%; }
+.channel-card:hover {
+  transform: translateY(-8px) scale(1.05); /* بزرگ‌تر شدن روی hover */
+  box-shadow: 0 20px 50px rgba(0,0,0,0.3), 0 0 40px rgba(59,130,246,0.7);
+}
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+.channel-card h2 { font-size: 24px; margin-bottom: 10px; } /* بزرگ‌تر */
+.channel-card p { font-size: 16px; opacity: 0.9; }
 .group-title {
   color: var(--secondary);
   font-size: 24px;
   font-weight:600;
   margin:40px 0 20px 0;
   text-align:center;
+  border-bottom: 2px solid var(--secondary);
+  padding-bottom: 10px;
 }
 .cards {
   display:grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 15px;
   width:100%;
   max-width:1200px;
+  justify-items: center;
 }
 .card {
   background: var(--surface);
@@ -68,33 +110,58 @@ h1 {
   display:flex;
   flex-direction:column;
   justify-content:space-between;
-  transition: transform 0.2s;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   cursor:pointer;
+  position:relative;
+  overflow:hidden;
+  opacity:0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.5s ease forwards;
+  max-width: 280px;
 }
-.card:hover { transform: translateY(-5px); }
-.card-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; }
-.proxy-name { font-weight:600; font-size: 16px; color: var(--primary); }
-.status { width:12px; height:12px; border-radius:50%; background: var(--secondary); }
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+.card:hover::before { transform: scaleX(1); }
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.25), var(--glow);
+}
+@keyframes fadeInUp {
+  to { opacity:1; transform: translateY(0); }
+}
+.card-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+.proxy-name { font-weight:600; font-size: 16px; color: var(--primary); display:flex; align-items:center; }
+.proxy-name::before { content: '🔗'; margin-right:8px; }
+.status { width:12px; height:12px; border-radius:50%; background: var(--secondary); box-shadow: 0 0 8px rgba(16,185,129,0.5); }
 .status.offline { background: var(--error); }
 .card-footer { display:flex; justify-content:flex-end; }
-.btn { background: var(--primary); color:#fff; padding: 8px 12px; border:none; border-radius:8px; cursor:pointer; transition: background 0.2s; text-decoration:none; font-weight:600; font-size: 14px; }
-.btn:hover { background: #2563EB; }
+.btn { background: linear-gradient(135deg, var(--primary), #2563EB); color:#fff; padding: 8px 12px; border:none; border-radius:8px; cursor:pointer; transition: transform 0.2s ease; text-decoration:none; font-weight:600; font-size: 13px; box-shadow: 0 4px 12px rgba(59,130,246,0.3); }
+.btn:hover { transform: translateY(-2px); }
 .loading { text-align:center; font-size: 18px; color: var(--primary); margin-top:40px; }
 .error { text-align:center; font-size: 18px; color: var(--error); margin-top:40px; }
 @media (max-width: 768px) {
-  .cards { grid-template-columns: 1fr; }
+  .cards { grid-template-columns: 1fr; gap: 10px; }
   body { padding: 10px; }
   h1 { font-size: 28px; }
-  .channel-card { padding: 12px; }
-  .card { padding: 12px; }
+  .channel-card { padding: 20px; } /* در موبایل کمی کوچک‌تر */
+  .card { padding: 12px; max-width: none; }
 }
 </style>
 </head>
 <body>
 <h1>🚀 Proxy List</h1>
 <div class="channel-card" onclick="openChannel()">
-  <h2>📢 Join Our Telegram Channel</h2>
-  <p>Bridge Services Support!</p>
+  <h2>📢 Join Our Official Telegram Channel!</h2>
+  <p>Bridge Services Support! Get the latest updates and support.</p>
 </div>
 <div id="content"></div>
 
@@ -102,18 +169,18 @@ h1 {
 const gistURL = "https://raw.githubusercontent.com/amsjbh42/conig/main/output.html";
 
 function openChannel() {
-  // برای سازگاری با اندروید، از window.open استفاده می‌کنیم تا در تب جدید باز شود اگر ممکن باشد
   window.open('https://t.me/BridgeTestChannel', '_blank');
 }
 
 function openProxy(proxy) {
-  // برای پروکسی‌ها، مستقیم به tg:// می‌رویم. اگر تلگرام نصب باشد، باز می‌شود.
-  // برای سازگاری بیشتر در اندروید، از window.open استفاده می‌کنیم.
-  window.open(proxy, '_blank');
+  if (proxy.startsWith('tg://')) {
+    window.location.href = proxy;
+  } else {
+    window.open(proxy, '_blank');
+  }
 }
 
 async function checkOnline(proxy){
-  // چک ساده: برای پروکسی‌های tg:// همیشه آنلاین فرض می‌کنیم
   return true;
 }
 
@@ -141,12 +208,10 @@ async function fetchProxies(){
       const lis = ul.querySelectorAll('li');
       if(lis.length === 0) continue;
 
-      // Add group title
       const groupDiv = document.createElement('div');
       groupDiv.innerHTML = `<div class="group-title">${groupName}</div>`;
       container.appendChild(groupDiv);
 
-      // Add cards for this group
       const cardsDiv = document.createElement('div');
       cardsDiv.className = 'cards';
 
@@ -184,7 +249,7 @@ async function fetchProxies(){
 }
 
 fetchProxies();
-setInterval(fetchProxies,3600000); // Every 1 hour
+setInterval(fetchProxies,3600000);
 </script>
 </body>
 </html>
