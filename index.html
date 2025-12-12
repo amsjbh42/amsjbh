@@ -4,245 +4,117 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Proxy Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 <style>
 :root {
-  --color-primary: #3B82F6;
-  --color-primary-dark: #2563EB;
-  --color-secondary: #10B981;
-  --color-background: linear-gradient(135deg, #F3F4F6 0%, #E5E7EB 100%);
-  --color-surface: #FFFFFF;
-  --color-on-surface: #1F2937;
-  --color-error: #EF4444;
-  --card-radius: 20px;
-  --shadow: 0 10px 30px rgba(0,0,0,0.15);
-  --glow: 0 0 20px rgba(59,130,246,0.3);
-  --glass-bg: rgba(255, 255, 255, 0.25);
-  --glass-border: rgba(255, 255, 255, 0.18);
+  --primary: #3B82F6;
+  --secondary: #10B981;
+  --bg: #F3F4F6;
+  --surface: #FFFFFF;
+  --text: #1F2937;
+  --error: #EF4444;
+  --radius: 12px;
+  --shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
-* { margin:0; padding:0; box-sizing:border-box; font-family:'Inter', sans-serif; direction:ltr; }
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Inter', sans-serif; }
 body {
-  background: var(--color-background);
-  color: var(--color-on-surface);
+  background: var(--bg);
+  color: var(--text);
   min-height: 100vh;
   display:flex;
   flex-direction:column;
   align-items:center;
   padding:20px;
-  overflow-x:hidden;
-  position:relative;
-  /* Removed backdrop-filter for performance */
-}
-body::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle at 20% 80%, rgba(59,130,246,0.1) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(16,185,129,0.1) 0%, transparent 50%);
-  pointer-events: none;
-  z-index: -1;
-  /* Removed animation for performance */
 }
 h1 {
-  color: var(--color-primary);
-  margin-bottom: 30px;
+  color: var(--primary);
+  margin-bottom: 20px;
   text-align:center;
-  font-size: clamp(28px, 6vw, 42px);
-  font-weight:700;
-  text-shadow: 0 4px 8px rgba(0,0,0,0.2);
-  background: linear-gradient(45deg, var(--color-primary), var(--color-secondary));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: titleGlow 3s ease-in-out infinite alternate;
-  position: relative;
-}
-h1::after {
-  content: '';
-  position: absolute;
-  bottom: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100px;
-  height: 4px;
-  background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
-  border-radius: 2px;
-  /* Simplified animation */
-  animation: lineGlow 3s ease-in-out infinite alternate;
-}
-@keyframes titleGlow {
-  0% { filter: brightness(1); }
-  100% { filter: brightness(1.2); }
-}
-@keyframes lineGlow {
-  0% { opacity: 0.7; transform: translateX(-50%) scaleX(0.8); }
-  100% { opacity: 1; transform: translateX(-50%) scaleX(1.2); }
-}
-.group-title {
-  color: var(--color-secondary);
-  font-size: clamp(20px, 4.5vw, 28px);
+  font-size: 32px;
   font-weight:600;
-  margin:50px 0 25px 0;
-  text-align:center;
-  border-bottom: 3px solid var(--color-secondary);
-  padding-bottom:15px;
-  position:relative;
-  background: linear-gradient(90deg, transparent, rgba(16,185,129,0.1), transparent);
-  border-radius: 10px;
-  padding: 10px 20px;
 }
-.group-title::after {
-  content: '🚀';
-  position: absolute;
-  right: -30px;
-  top: 50%;
-  transform: translateY(-50%);
+.channel-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 15px;
+  box-shadow: var(--shadow);
+  margin-bottom: 30px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.channel-card:hover { transform: translateY(-2px); }
+.channel-card h2 { font-size: 18px; color: var(--secondary); }
+.group-title {
+  color: var(--secondary);
   font-size: 24px;
-  /* Simplified animation */
-  animation: rocketFly 2s ease-in-out infinite;
-}
-@keyframes rocketFly {
-  0%, 100% { transform: translateY(-50%); }
-  50% { transform: translateY(-50%) translateX(5px); }
+  font-weight:600;
+  margin:40px 0 20px 0;
+  text-align:center;
 }
 .cards {
   display:grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 15px;
   width:100%;
-  max-width:1500px;
-  justify-items: center;
+  max-width:1200px;
 }
 .card {
-  background: var(--glass-bg);
-  /* Removed backdrop-filter for performance; applied only on hover for better perf */
-  border: 1px solid var(--glass-border);
-  border-radius: var(--card-radius);
-  padding: 20px;
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 15px;
   box-shadow: var(--shadow);
   display:flex;
   flex-direction:column;
   justify-content:space-between;
-  opacity:0;
-  transform: translateY(30px) scale(0.9) rotateX(10deg);
-  transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.6s, opacity 0.6s;
+  transition: transform 0.2s;
   cursor:pointer;
-  position:relative;
-  overflow:hidden;
-  width:100%;
-  max-width:320px;
-  will-change: transform, opacity; /* GPU acceleration hint */
 }
-.card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 6px;
-  background: linear-gradient(90deg, var(--color-primary), var(--color-secondary), #F59E0B);
-  transform: scaleX(0);
-  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  border-radius: var(--card-radius) var(--card-radius) 0 0;
-}
-.card::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, var(--color-secondary), var(--color-primary));
-  transform: scaleX(0);
-  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  border-radius: 0 0 var(--card-radius) var(--card-radius);
-}
-.card:hover::before {
-  transform: scaleX(1);
-}
-.card:hover::after {
-  transform: scaleX(1);
-}
-.card:hover {
-  transform: translateY(-15px) scale(1.08) rotateX(0deg);
-  box-shadow: 0 25px 50px rgba(0,0,0,0.25), var(--glow);
-  /* Added backdrop-filter only on hover for performance */
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-.card.show {opacity:1; transform:translateY(0) scale(1) rotateX(0deg);}
-.card-header {display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;}
-.proxy-name {font-weight:700; font-size: 18px; color: var(--color-primary); display:flex; align-items:center; transition: color 0.3s;}
-.proxy-name::before {content: '🔗'; margin-right:8px; transition: transform 0.3s;}
-.card:hover .proxy-name::before { transform: rotate(360deg); }
-.status {width:16px; height:16px; border-radius:50%; box-shadow: 0 0 10px rgba(16,185,129,0.6); transition: all 0.3s;}
-.status.online {background: var(--color-secondary); animation: pulse 2s infinite;}
-.status.offline {background: var(--color-error);}
-@keyframes pulse {0%, 100% {opacity:1; transform:scale(1);} 50% {opacity:0.7; transform:scale(1.1);}}
-.card-footer {display:flex; justify-content:flex-end;}
-.btn {background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); color:#fff; padding: 10px 15px; border:none; border-radius:12px; cursor:pointer; transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); text-decoration:none; font-weight:600; font-size: 14px; box-shadow: 0 6px 12px rgba(59,130,246,0.4); position:relative; overflow:hidden;}
-.btn::before {content: ''; position:absolute; top:0; left:-100%; width:100%; height:100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transition: left 0.5s;}
-.btn:hover::before {left:100%;}
-.btn:hover {transform: translateY(-3px) scale(1.05); box-shadow: 0 10px 20px rgba(59,130,246,0.5);}
-.btn i {margin-right:8px;}
-.skeleton {height: 120px; background: linear-gradient(90deg, #e5e7eb 25%, #d1d5db 50%, #e5e7eb 75%); background-size: 200% 100%; border-radius: var(--card-radius); animation: skeletonAnim 1.5s infinite;}
-@keyframes skeletonAnim {0% {background-position: 200% 0;} 100% {background-position: -200% 0;}}
-.parallax {position:fixed; inset:0; background: radial-gradient(circle at 30% 40%, rgba(16,185,129,0.15), transparent 70%), radial-gradient(circle at 70% 60%, rgba(59,130,246,0.15), transparent 70%); pointer-events:none; transform: translateZ(0); /* Removed animation for performance */}
-.loading {text-align:center; font-size: 18px; color: var(--color-primary); margin-top:60px; animation: loadingPulse 1.5s infinite;}
-@keyframes loadingPulse {0%, 100% {opacity:1;} 50% {opacity:0.5;}}
-.error {text-align:center; font-size: 18px; color: var(--color-error); margin-top:60px;}
-/* Media queries for responsive grid and performance optimizations */
-@media (max-width: 480px) {
-  .cards {
-    grid-template-columns: 1fr; /* 1 column on small phones */
-    gap: 15px;
-  }
-  body {
-    padding: 10px;
-  }
-  /* Disable heavy effects on mobile */
-  .card:hover {
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-  }
-  .parallax { display: none; } /* Hide parallax on mobile for perf */
-}
-@media (min-width: 481px) and (max-width: 768px) {
-  .cards {
-    grid-template-columns: repeat(2, 1fr); /* 2 columns on tablets */
-    gap: 15px;
-  }
-}
-@media (min-width: 769px) and (max-width: 1024px) {
-  .cards {
-    grid-template-columns: repeat(3, 1fr); /* 3 columns on small laptops */
-    gap: 20px;
-  }
-}
-@media (min-width: 1025px) {
-  .cards {
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Auto-fit 3+ columns on larger screens */
-    gap: 25px;
-  }
+.card:hover { transform: translateY(-5px); }
+.card-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; }
+.proxy-name { font-weight:600; font-size: 16px; color: var(--primary); }
+.status { width:12px; height:12px; border-radius:50%; background: var(--secondary); }
+.status.offline { background: var(--error); }
+.card-footer { display:flex; justify-content:flex-end; }
+.btn { background: var(--primary); color:#fff; padding: 8px 12px; border:none; border-radius:8px; cursor:pointer; transition: background 0.2s; text-decoration:none; font-weight:600; font-size: 14px; }
+.btn:hover { background: #2563EB; }
+.loading { text-align:center; font-size: 18px; color: var(--primary); margin-top:40px; }
+.error { text-align:center; font-size: 18px; color: var(--error); margin-top:40px; }
+@media (max-width: 768px) {
+  .cards { grid-template-columns: 1fr; }
+  body { padding: 10px; }
+  h1 { font-size: 28px; }
+  .channel-card { padding: 12px; }
+  .card { padding: 12px; }
 }
 </style>
 </head>
 <body>
-<div class="parallax"></div>
 <h1>🚀 Proxy List</h1>
+<div class="channel-card" onclick="openChannel()">
+  <h2>📢 Join Our Telegram Channel</h2>
+  <p>Bridge Services Support!</p>
+</div>
 <div id="content"></div>
 
 <script>
 const gistURL = "https://raw.githubusercontent.com/amsjbh42/conig/main/output.html";
 
+function openChannel() {
+  // برای سازگاری با اندروید، از window.open استفاده می‌کنیم تا در تب جدید باز شود اگر ممکن باشد
+  window.open('https://t.me/BridgeTestChannel', '_blank');
+}
+
+function openProxy(proxy) {
+  // برای پروکسی‌ها، مستقیم به tg:// می‌رویم. اگر تلگرام نصب باشد، باز می‌شود.
+  // برای سازگاری بیشتر در اندروید، از window.open استفاده می‌کنیم.
+  window.open(proxy, '_blank');
+}
+
 async function checkOnline(proxy){
-  try{
-    // For Telegram proxies, online check is tricky, so assume always online or simple check
-    // For simplicity, always return true since all are tg://
-    return true;
-  }catch(e){ return false; }
+  // چک ساده: برای پروکسی‌های tg:// همیشه آنلاین فرض می‌کنیم
+  return true;
 }
 
 async function fetchProxies(){
@@ -291,7 +163,7 @@ async function fetchProxies(){
         card.innerHTML = `
           <div class="card-header">
             <div class="proxy-name">${name}</div>
-            <div class="status ${isOnline?'online':'offline'}"></div>
+            <div class="status ${isOnline?'':'offline'}"></div>
           </div>
           <div class="card-footer">
             <span class="btn"><i class="fab fa-telegram-plane"></i>Add to Telegram</span>
@@ -299,11 +171,10 @@ async function fetchProxies(){
         `;
 
         card.addEventListener('click', ()=>{
-          window.location.href = proxy; // Directly add to Telegram
+          openProxy(proxy);
         });
 
         cardsDiv.appendChild(card);
-        setTimeout(() => card.classList.add('show'), globalIndex * 50); // Faster animation delay for perf
       }
       container.appendChild(cardsDiv);
     }
